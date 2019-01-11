@@ -1,10 +1,8 @@
 {
-  "name": "custom-view-samples",
-  "displayName": "Custom view Samples",
-  "description": "Samples for VSCode's view API",
+  "name": "vscode-npm-package-explorer",
+  "displayName": "VSCode NPM Package Explorer",
+  "description": "File Explorer that starts with root dependencies and devDependencies",
   "version": "0.0.1",
-  "publisher": "vscode-samples",
-  "enableProposedApi": true,
   "engines": {
     "vscode": "^1.25.0"
   },
@@ -12,9 +10,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onView:nodeDependencies",
-    "onView:fileExplorer",
-    "onCommand:sample.reveal"
+    "onView:nodeDependencies"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -33,87 +29,36 @@
           "id": "nodeDependencies",
           "name": "Node Dependencies"
         }
-      ],
-      "explorer": [
-        {
-          "id": "fileExplorer",
-          "name": "File Explorer"
-        }
       ]
     },
     "commands": [
       {
-        "command": "nodeDependencies.refreshEntry",
-        "title": "Refresh",
+        "command": "nodeDependencies.openPackageOnNpm",
+        "title": "Open in NPM",
         "icon": {
-          "light": "resources/light/refresh.svg",
-          "dark": "resources/dark/refresh.svg"
-        }
-      },
-      {
-        "command": "nodeDependencies.addEntry",
-        "title": "Add"
-      },
-      {
-        "command": "nodeDependencies.editEntry",
-        "title": "Edit",
-        "icon": {
-          "light": "resources/light/edit.svg",
-          "dark": "resources/dark/edit.svg"
+          "light": "resources/light/npm.svg",
+          "dark": "resources/dark/npm.svg"
         }
       },
       {
         "command": "nodeDependencies.openInNodeModules",
-        "title": "Open in node_modules"
-      },
-      {
-        "command": "nodeDependencies.openEntryInNpm",
-        "title": "Open NPM"
-      },
-      {
-        "command": "fileExplorer.refreshFile",
-        "title": "Refresh",
+        "title": "Open in node_modules",
         "icon": {
-          "light": "resources/light/refresh.svg",
-          "dark": "resources/dark/refresh.svg"
+          "light": "resources/light/document.svg",
+          "dark": "resources/dark/document.svg"
         }
-      },
-      {
-        "command": "fileExplorer.openFile",
-        "title": "Open File"
       }
     ],
     "menus": {
-      "view/title": [
-        {
-          "command": "nodeDependencies.refreshEntry",
-          "when": "view == nodeDependencies",
-          "group": "navigation"
-        },
-        {
-          "command": "nodeDependencies.addEntry",
-          "when": "view == nodeDependencies"
-        }
-      ],
       "view/item/context": [
         {
-          "command": "nodeDependencies.editEntry",
+          "command": "nodeDependencies.openPackageOnNpm",
           "when": "view == nodeDependencies && viewItem == dependency",
           "group": "inline"
         },
         {
-          "command": "nodeDependencies.openEntryInNpm",
-          "group": "menu@1",
-          "when": "view == nodeDependencies && viewItem == dependency"
-        },
-        {
           "command": "nodeDependencies.openInNodeModules",
-          "group": "menu@2",
-          "when": "view == nodeDependencies && viewItem == dependency"
-        },
-        {
-          "command": "fileExplorer.refreshFile",
-          "when": "view == fileExplorer && viewItem == file",
+          "when": "view == nodeDependencies && viewItem == dependency",
           "group": "inline"
         }
       ]
