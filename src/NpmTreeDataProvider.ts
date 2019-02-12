@@ -25,7 +25,6 @@ export default class NpmTreeDataProvider implements vscode.TreeDataProvider<NpmT
       vscode.window.showInformationMessage("No dependency in empty workspace");
       return Promise.resolve([]);
     }
-
     if (element) {
       return Promise.resolve(this.getDepsInPackageJson(element.folderPath));
     } else {
@@ -39,23 +38,34 @@ export default class NpmTreeDataProvider implements vscode.TreeDataProvider<NpmT
     }
   }
 
-  /**
-   * Given the path to package.json, read all its dependencies and devDependencies.
-   */
+  isDirectory(source) {
+    return fs.lstatSync(source).isDirectory();
+  }
+
+  getPackageJsonDirectories(source) {
+    return fs
+      .readdirSync(source)
+      .map(name => path.join(source, name))
+      .filter(this.isDirectory)
+      .map(name => path.join(name, "package.json"));
+  }
+
+  pathExists(p: string): boolean {
+    try {
+      fs.accessSync(p);
+    } catch (err) {
+      return false;
+    }
+    return true;
+  }
+
   private getDepsInPackageJson(packageJsonBasePath: string): NpmTreeItem[] {
     let packageJsonPaths = [packageJsonBasePath];
     const packageJson = JSON.parse(fs.readFileSync(packageJsonBasePath, "utf-8"));
-    const isDirectory = source => fs.lstatSync(source).isDirectory();
-    const getDirectories = source =>
-      fs
-        .readdirSync(source)
-        .map(name => path.join(source, name))
-        .filter(isDirectory)
-        .map(name => path.join(name, "package.json"));
     if (packageJson.workspaces) {
       for (let workspace of packageJson.workspaces) {
         if (workspace.includes("*")) {
-          const workspaceDirectories = getDirectories(
+          const workspaceDirectories = this.getPackageJsonDirectories(
             path.join(packageJsonBasePath.replace("package.json", ""), workspace.replace("*", ""))
           );
           packageJsonPaths = [...packageJsonPaths, ...workspaceDirectories];
@@ -113,15 +123,5 @@ export default class NpmTreeDataProvider implements vscode.TreeDataProvider<NpmT
       }
     }, []);
     return dependencies;
-  }
-
-  private pathExists(p: string): boolean {
-    try {
-      fs.accessSync(p);
-    } catch (err) {
-      return false;
-    }
-
-    return true;
   }
 }
